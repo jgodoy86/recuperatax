@@ -6,6 +6,8 @@ import { db } from "@/lib/db";
 import { AuthError, requireSession } from "@/lib/auth";
 import { DOCUMENT_TYPES, DocumentType } from "@/lib/constants";
 import { validateDocument } from "@/lib/ai/validator";
+import { validateUblAgainstCase } from "@/lib/ubl";
+import { INVOICE_MAX_AGE_DAYS } from "@/lib/constants";
 import { notify } from "@/lib/notifications";
 
 const UPLOAD_DIR = path.join(process.cwd(), "uploads");
@@ -70,19 +72,61 @@ export async function POST(
       },
     });
 
-    // Validación automática con IA
-    const validation = await validateDocument({
-      filePath,
-      mimeType: file.type,
-      documentType: type,
-      clientName: c.client.companyName ?? c.client.name,
-      caseContext: {
-        vehicleType: c.vehicleType,
-        vehicleBrand: c.vehicleBrand,
-        vehicleModel: c.vehicleModel,
+    // Validación automática: parser UBL determinístico para el XML de la
+    // factura electrónica; IA (visión/PDF) para el resto de documentos.
+    let validation: {
+      verdict: string;
+      reason: string;
+      engine: string;
+      [k: string]: unknown;
+    };
+    if (type === "FACTURA_XML") {
+      const xml = Buffer.from(await file.arrayBuffer()).toString("utf8");
+      const ubl = validateUblAgainstCase(xml, {
+        clientName: c.client.companyName ?? c.client.name,
+        clientDocumentId: c.client.documentId,
         ivaPaid: c.ivaPaid,
-      },
-    });
+        invoiceDate: c.invoiceDate,
+        invoiceNumber: c.invoiceNumber,
+        maxAgeDays: INVOICE_MAX_AGE_DAYS,
+      });
+      validation = { ...ubl, engine: "ubl" };
+
+      // Si la factura es válida, completar el caso con los valores exactos
+      if (ubl.verdict === "APROBADO" && ubl.parsed.ivaAmount) {
+        await db.case.update({
+          where: { id },
+          data: {
+            ivaPaid: ubl.parsed.ivaAmount,
+            ivaDiscriminated: true,
+            ...(ubl.parsed.invoiceNumber ? { invoiceNumber: ubl.parsed.invoiceNumber } : {}),
+            ...(ubl.parsed.issueDate ? { invoiceDate: new Date(ubl.parsed.issueDate) } : {}),
+            estimatedRecovery: ubl.parsed.ivaAmount,
+          },
+        });
+        await db.caseEvent.create({
+          data: {
+            caseId: id,
+            type: "NOTE",
+            actor: "sistema",
+            message: `Datos del caso actualizados con los valores exactos del XML de la factura: IVA ${ubl.parsed.ivaAmount.toLocaleString("es-CO")} COP, factura ${ubl.parsed.invoiceNumber ?? ""} del ${ubl.parsed.issueDate ?? ""}. CUFE registrado.`,
+          },
+        });
+      }
+    } else {
+      validation = await validateDocument({
+        filePath,
+        mimeType: file.type,
+        documentType: type,
+        clientName: c.client.companyName ?? c.client.name,
+        caseContext: {
+          vehicleType: c.vehicleType,
+          vehicleBrand: c.vehicleBrand,
+          vehicleModel: c.vehicleModel,
+          ivaPaid: c.ivaPaid,
+        },
+      });
+    }
 
     await db.document.update({
       where: { id: doc.id },
