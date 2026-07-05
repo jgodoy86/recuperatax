@@ -108,6 +108,20 @@ export default function AdminActions({
       </div>
 
       <div className="card">
+        <h2 className="font-bold">💳 Honorarios</h2>
+        <p className="mt-1 text-xs text-slate-500">
+          Genera el cobro de honorarios del caso; el cliente verá el botón de pago Wompi (PSE, tarjeta, Nequi) en su tablero.
+        </p>
+        <button
+          className="btn-secondary mt-3 w-full !py-2 text-sm"
+          disabled={busy}
+          onClick={() => run({ action: "request_payment" }, "Cobro de honorarios generado")}
+        >
+          Generar cobro de honorarios
+        </button>
+      </div>
+
+      <div className="card">
         <h2 className="font-bold">Asignar gestor</h2>
         <div className="mt-3 flex gap-2">
           <select className="input" value={gestorId} onChange={(e) => setGestorId(e.target.value)}>

@@ -7,7 +7,7 @@ import { AuthError, requireSession } from "@/lib/auth";
 import { DOCUMENT_TYPES, DocumentType } from "@/lib/constants";
 import { validateDocument } from "@/lib/ai/validator";
 import { validateUblAgainstCase } from "@/lib/ubl";
-import { INVOICE_MAX_AGE_DAYS } from "@/lib/constants";
+import { FEE_MIN, FEE_PCT, INVOICE_MAX_AGE_DAYS } from "@/lib/constants";
 import { notify } from "@/lib/notifications";
 
 const UPLOAD_DIR = path.join(process.cwd(), "uploads");
@@ -102,6 +102,7 @@ export async function POST(
             ...(ubl.parsed.invoiceNumber ? { invoiceNumber: ubl.parsed.invoiceNumber } : {}),
             ...(ubl.parsed.issueDate ? { invoiceDate: new Date(ubl.parsed.issueDate) } : {}),
             estimatedRecovery: ubl.parsed.ivaAmount,
+            fees: Math.max(Math.round(ubl.parsed.ivaAmount * FEE_PCT), FEE_MIN),
           },
         });
         await db.caseEvent.create({

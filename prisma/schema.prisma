@@ -93,6 +93,7 @@ model Case {
   signatures  Signature[]
   events      CaseEvent[]
   submissions Submission[]
+  payments    Payment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -175,6 +176,22 @@ model Notification {
   error     String?
   sentAt    DateTime?
   createdAt DateTime  @default(now())
+}
+
+// Pagos de honorarios — proveedor Wompi (PSE, tarjetas, Nequi)
+// status: PENDIENTE | APROBADO | DECLINADO | ANULADO | ERROR
+model Payment {
+  id           String    @id @default(cuid())
+  case         Case      @relation(fields: [caseId], references: [id])
+  caseId       String
+  concept      String    @default("HONORARIOS")
+  amountCOP    Float
+  reference    String    @unique // referencia enviada a Wompi
+  status       String    @default("PENDIENTE")
+  provider     String    @default("WOMPI")
+  providerTxId String?
+  createdAt    DateTime  @default(now())
+  paidAt       DateTime?
 }
 
 model Simulation {

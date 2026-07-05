@@ -14,6 +14,7 @@ import {
 import { StatusBadge, VerdictBadge } from "@/components/badges";
 import SignPanel from "./SignPanel";
 import UploadPanel from "./UploadPanel";
+import PaymentPanel from "./PaymentPanel";
 
 export const dynamic = "force-dynamic";
 
@@ -96,6 +97,9 @@ export default async function CasoDetalle({
                     : "Tu equipo gestor está trabajando en el caso. Te notificaremos cada avance."}
         </p>
       </div>
+
+      {/* Pago de honorarios (si el gestor generó el cobro) */}
+      <PaymentPanel caseId={c.id} />
 
       {/* Firma digital */}
       {!allSigned && c.status !== "NO_APTO" && (

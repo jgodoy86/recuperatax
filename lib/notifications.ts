@@ -5,6 +5,8 @@
 import { db } from "./db";
 
 export type NotificationTemplate =
+  | "PAGO_HONORARIOS_SOLICITADO"
+  | "PAGO_HONORARIOS_RECIBIDO"
   | "DOC_RECIBIDO"
   | "DOC_RECHAZADO"
   | "DOC_FALTANTE"
@@ -54,6 +56,15 @@ const TEMPLATES: Record<NotificationTemplate, { subject: string; body: (v: Recor
   DEVOLUCION_APROBADA: {
     subject: "¡Devolución aprobada!",
     body: (v) => `La DIAN aprobó la devolución de tu caso ${v.refCode}.`,
+  },
+  PAGO_HONORARIOS_SOLICITADO: {
+    subject: "Pago de honorarios pendiente",
+    body: (v) =>
+      `Se generó el cobro de honorarios de tu caso ${v.refCode} por ${v.amount}. Puedes pagar en línea desde tu tablero (PSE, tarjeta o Nequi).`,
+  },
+  PAGO_HONORARIOS_RECIBIDO: {
+    subject: "Pago de honorarios recibido",
+    body: (v) => `Recibimos el pago de honorarios de tu caso ${v.refCode} por ${v.amount}. ¡Gracias!`,
   },
   PAGO_RECIBIDO: {
     subject: "Pago recibido",

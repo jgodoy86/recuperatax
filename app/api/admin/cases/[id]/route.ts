@@ -3,6 +3,7 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { AuthError, requireSession } from "@/lib/auth";
 import { submitCase, applyEntityUpdate } from "@/lib/integrations/orchestrator";
+import { createFeePayment } from "@/lib/payments";
 import { UPME_STATUS, DIAN_STATUS } from "@/lib/constants";
 
 const schema = z.discriminatedUnion("action", [
@@ -16,6 +17,7 @@ const schema = z.discriminatedUnion("action", [
   }),
   z.object({ action: z.literal("submit"), entity: z.enum(["UPME", "DIAN"]) }),
   z.object({ action: z.literal("note"), message: z.string().min(1) }),
+  z.object({ action: z.literal("request_payment") }),
 ]);
 
 export async function PATCH(
@@ -58,6 +60,10 @@ export async function PATCH(
           data: { caseId: id, type: "NOTE", actor: session.email, message: body.message },
         });
         break;
+      }
+      case "request_payment": {
+        const payment = await createFeePayment(id, session.email);
+        return NextResponse.json({ ok: true, reference: payment.reference, amount: payment.amountCOP });
       }
     }
     return NextResponse.json({ ok: true });
