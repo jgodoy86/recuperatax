@@ -22,6 +22,9 @@ Plataforma digital para que personas y empresas recuperen impuestos pagados de m
 | Notificaciones WhatsApp + correo (cola en BD, proveedor conectable) | `lib/notifications.ts` |
 | Panel para concesionarios (referidos + comisión) | `app/concesionarios` |
 | Integración UPME/DIAN de **doble canal: API + bot RPA** | `lib/integrations/` + `scripts/worker.ts` |
+| **Parser XML UBL** de factura electrónica DIAN (Invoice y AttachedDocument, CUFE, IVA exacto, validación determinística contra el caso) | `lib/ubl.ts` |
+| **Pagos de honorarios con Wompi** (checkout PSE/tarjeta/Nequi, firma de integridad, webhook verificado) | `lib/payments.ts` + `app/api/webhooks/wompi` |
+| **Cargue masivo de flotas** (CSV hasta 500 vehículos, un caso por vehículo, plantilla y matriz de beneficios exportable) | `lib/fleet.ts` + `app/app/flota` |
 
 ## Automatización UPME / DIAN (doble canal)
 
@@ -69,9 +72,8 @@ Next.js 16 (App Router) · TypeScript · Tailwind 4 · Prisma 6 + SQLite (dev; c
 
 ## Roadmap sugerido
 
-1. Bots RPA reales contra los portales UPME/DIAN (calibrar selectores en `scripts/worker.ts`).
-2. Módulo de pagos de honorarios (Wompi/PayU/Stripe).
-3. Cargue masivo de facturas para flotas (CSV/XLSX) y matriz de beneficios.
-4. Reportes gerenciales exportables.
-5. Parser XML de factura electrónica DIAN (UBL) para validación exacta del IVA.
-6. Migración a PostgreSQL + almacenamiento de archivos en S3/GCS.
+1. Bots RPA reales contra los portales UPME/DIAN (calibrar selectores en `scripts/worker.ts` con credenciales reales).
+2. Reportes gerenciales exportables (por gestor, por concesionario, embudo comercial).
+3. Migración a PostgreSQL + almacenamiento de archivos en S3/GCS (antes del deploy).
+4. Verificación del CUFE contra el servicio de consulta pública de la DIAN.
+5. Cargue XLSX además de CSV para flotas.

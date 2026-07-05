@@ -26,9 +26,17 @@ export default async function MisCasos() {
     <div className="mx-auto max-w-5xl px-4 py-10">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-black">Mis casos</h1>
-        <Link href="/app/nuevo-caso" className="btn-primary">
-          + Nuevo caso
-        </Link>
+        <div className="flex gap-2">
+          <Link href="/app/flota" className="btn-secondary">
+            📦 Cargue de flota
+          </Link>
+          <a href="/api/fleet/matrix" className="btn-secondary">
+            ⬇ Matriz
+          </a>
+          <Link href="/app/nuevo-caso" className="btn-primary">
+            + Nuevo caso
+          </Link>
+        </div>
       </div>
 
       {cases.length === 0 ? (
