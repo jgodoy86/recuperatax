@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+body {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+@utility btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  background: var(--color-emerald-600);
+  padding: 0.625rem 1.25rem;
+  font-weight: 600;
+  color: white;
+  transition: background 0.15s;
+  &:hover {
+    background: var(--color-emerald-700);
+  }
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+@utility btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-slate-300);
+  background: white;
+  padding: 0.625rem 1.25rem;
+  font-weight: 600;
+  color: var(--color-slate-700);
+  transition: background 0.15s;
+  &:hover {
+    background: var(--color-slate-50);
+  }
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+@utility card {
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-slate-200);
+  background: white;
+  padding: 1.5rem;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+@utility input {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-slate-300);
+  background: white;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  &:focus {
+    outline: none;
+    border-color: var(--color-emerald-500);
+    box-shadow: 0 0 0 1px var(--color-emerald-500);
+  }
+}
+
+@utility label {
+  margin-bottom: 0.25rem;
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-slate-700);
+}
+
+@utility badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}

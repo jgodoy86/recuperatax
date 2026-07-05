@@ -1,0 +1,199 @@
+// RecuperaTax — esquema de datos
+// SQLite para el MVP (cero configuración). Para producción cambiar provider a
+// "postgresql" — los tipos String usados como enums son compatibles.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Roles: CLIENT | GESTOR | ADMIN | DEALER
+// ClientType: NATURAL | EMPRESA
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  phone        String?
+  role         String   @default("CLIENT")
+  clientType   String   @default("NATURAL")
+  documentId   String? // cédula o NIT
+  companyName  String?
+  createdAt    DateTime @default(now())
+
+  cases         Case[]     @relation("ClientCases")
+  assignedCases Case[]     @relation("GestorCases")
+  dealer        Dealer?
+  notifications Notification[]
+}
+
+model Dealer {
+  id             String   @id @default(cuid())
+  user           User     @relation(fields: [userId], references: [id])
+  userId         String   @unique
+  dealershipName String
+  commissionPct  Float    @default(5)
+  referrals      Case[]
+  createdAt      DateTime @default(now())
+}
+
+// Estado global del caso: DIAGNOSTICO | DOCUMENTOS | FIRMA | UPME | DIAN | FINALIZADO | NO_APTO | CERRADO
+// upmeStatus: PENDIENTE | DOCS_PENDIENTES | REVISION_INTERNA | EXPEDIENTE_LISTO | RADICADO |
+//             REVISION_COMPLETITUD | REQUERIDO | SUBSANADO | EN_EVALUACION | APROBADO | NEGADO | CERRADO
+// dianStatus: PENDIENTE | EXPEDIENTE_LISTO | RADICADO | EN_REVISION | REQUERIMIENTO |
+//             SUBSANADO | APROBADO | RECHAZADO | PAGADO | CERRADO
+model Case {
+  id       String @id @default(cuid())
+  refCode  String @unique // código legible ej. RTX-2026-0001
+  client   User   @relation("ClientCases", fields: [clientId], references: [id])
+  clientId String
+
+  gestor   User?   @relation("GestorCases", fields: [gestorId], references: [id])
+  gestorId String?
+
+  dealer   Dealer? @relation(fields: [dealerId], references: [id])
+  dealerId String?
+
+  // Vehículo
+  vehicleType  String // BEV | HEV | PHEV | MHEV | OTRO
+  vehicleBrand String
+  vehicleModel String
+  vehicleYear  Int
+  vin          String?
+  plate        String?
+
+  // Factura / valores (COP)
+  invoiceDate       DateTime?
+  invoiceNumber     String?
+  purchaseValue     Float
+  ivaPaid           Float
+  ivaDiscriminated  Boolean   @default(false)
+  ivaAlreadyUsed    Boolean   @default(false) // usado como costo/deducción/descontable
+  estimatedRecovery Float     @default(0)
+  fees              Float     @default(0)
+
+  eligibility       String  @default("PENDIENTE") // APTO | REVISION | NO_APTO | PENDIENTE
+  eligibilityDetail String? // JSON con reglas evaluadas
+
+  status     String @default("DIAGNOSTICO")
+  upmeStatus String @default("PENDIENTE")
+  dianStatus String @default("PENDIENTE")
+
+  upmeRadicado     String?
+  upmeCertificate  String? // ruta del certificado emitido
+  dianRadicado     String?
+  refundPaidAmount Float?
+  refundPaidAt     DateTime?
+
+  documents   Document[]
+  signatures  Signature[]
+  events      CaseEvent[]
+  submissions Submission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// type: CEDULA | RUT | FACTURA_PDF | FACTURA_XML | FICHA_TECNICA | TARJETA_PROPIEDAD |
+//       SOPORTE_PAGO | CAMARA_COMERCIO | CERTIFICACION_CONTABLE | PODER | CERTIFICADO_UPME | OTRO
+// status: PENDIENTE | EN_VALIDACION | APROBADO | RECHAZADO | REQUIERE_CORRECCION | REVISION_HUMANA
+model Document {
+  id           String   @id @default(cuid())
+  case         Case     @relation(fields: [caseId], references: [id])
+  caseId       String
+  type         String
+  status       String   @default("PENDIENTE")
+  fileName     String
+  filePath     String
+  mimeType     String
+  sizeBytes    Int
+  aiValidation String? // JSON: resultado de validación IA
+  reviewNotes  String?
+  uploadedAt   DateTime @default(now())
+  reviewedAt   DateTime?
+}
+
+// type: CONTRATO_SERVICIOS | HABEAS_DATA | MANDATO | VERACIDAD | NO_GARANTIA
+model Signature {
+  id        String   @id @default(cuid())
+  case      Case     @relation(fields: [caseId], references: [id])
+  caseId    String
+  type      String
+  signerName String
+  signerDoc  String
+  ipAddress String?
+  userAgent String?
+  hash      String // SHA-256 del texto aceptado + firmante + timestamp
+  signedAt  DateTime @default(now())
+}
+
+model CaseEvent {
+  id        String   @id @default(cuid())
+  case      Case     @relation(fields: [caseId], references: [id])
+  caseId    String
+  type      String // STATUS_CHANGE | DOC_UPLOADED | DOC_REVIEWED | NOTE | SUBMISSION | NOTIFICATION
+  message   String
+  actor     String // email o "sistema" / "ia" / "bot"
+  meta      String? // JSON
+  createdAt DateTime @default(now())
+}
+
+// Radicaciones ante entidades — canal dual: API oficial o BOT (RPA)
+// entity: UPME | DIAN ; channel: API | BOT | MANUAL
+// status: EN_COLA | PROCESANDO | RADICADO | ERROR | REINTENTO
+model Submission {
+  id          String    @id @default(cuid())
+  case        Case      @relation(fields: [caseId], references: [id])
+  caseId      String
+  entity      String
+  channel     String
+  status      String    @default("EN_COLA")
+  radicado    String?
+  payload     String? // JSON del expediente enviado
+  response    String? // JSON de respuesta de la entidad
+  attempts    Int       @default(0)
+  lastError   String?
+  scheduledAt DateTime  @default(now())
+  processedAt DateTime?
+  createdAt   DateTime  @default(now())
+}
+
+// channel: EMAIL | WHATSAPP ; status: PENDIENTE | ENVIADA | ERROR
+model Notification {
+  id        String    @id @default(cuid())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String
+  channel   String
+  template  String
+  subject   String
+  body      String
+  status    String    @default("PENDIENTE")
+  error     String?
+  sentAt    DateTime?
+  createdAt DateTime  @default(now())
+}
+
+model Simulation {
+  id              String   @id @default(cuid())
+  clientType      String
+  vehicleType     String
+  vehicleBrand    String?
+  vehicleModel    String?
+  vehicleYear     Int?
+  purchaseValue   Float
+  ivaPaid         Float
+  hasInvoice      Boolean
+  declaresIncome  Boolean
+  invoiceDate     DateTime?
+  eligibility     String
+  estimatedRefund Float
+  fees            Float
+  detail          String? // JSON
+  email           String?
+  convertedCaseId String?
+  createdAt       DateTime @default(now())
+}
