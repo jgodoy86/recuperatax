@@ -82,7 +82,7 @@ function RegistroForm() {
         </button>
         <p className="text-center text-sm text-slate-500">
           ¿Ya tienes cuenta?{" "}
-          <Link href="/login" className="font-semibold text-emerald-700">
+          <Link href="/login" className="font-semibold text-brand-700">
             Ingresar
           </Link>
         </p>

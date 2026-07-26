@@ -45,7 +45,7 @@ export default function Login() {
         </button>
         <p className="text-center text-sm text-slate-500">
           ¿No tienes cuenta?{" "}
-          <Link href="/registro" className="font-semibold text-emerald-700">
+          <Link href="/registro" className="font-semibold text-brand-700">
             Crear cuenta
           </Link>
         </p>

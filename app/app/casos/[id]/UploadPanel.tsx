@@ -79,7 +79,7 @@ export default function UploadPanel({
           {status.kind === "loading" ? "Validando…" : "Subir"}
         </button>
       </form>
-      {status.kind === "ok" && <p className="mt-3 text-sm font-semibold text-emerald-700">{status.msg}</p>}
+      {status.kind === "ok" && <p className="mt-3 text-sm font-semibold text-brand-700">{status.msg}</p>}
       {status.kind === "error" && <p className="mt-3 text-sm font-semibold text-red-600">{status.msg}</p>}
     </div>
   );

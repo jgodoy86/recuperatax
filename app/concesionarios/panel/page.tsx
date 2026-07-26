@@ -42,7 +42,7 @@ export default async function PanelConcesionario() {
           <p className="text-xs font-semibold uppercase text-slate-500">
             Comisión estimada ({dealer.commissionPct} %)
           </p>
-          <p className="text-2xl font-black text-emerald-700">{fmtCOP(commission)}</p>
+          <p className="text-2xl font-black text-brand-700">{fmtCOP(commission)}</p>
         </div>
       </div>
 

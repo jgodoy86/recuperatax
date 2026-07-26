@@ -72,10 +72,10 @@ export default function AdminActions({
           </button>
         </div>
         <div className="mt-2 flex gap-2 text-xs">
-          <a href={`/api/cases/${caseId}/expediente?entity=UPME`} target="_blank" className="text-emerald-700 underline">
+          <a href={`/api/cases/${caseId}/expediente?entity=UPME`} target="_blank" className="text-brand-700 underline">
             Ver expediente UPME
           </a>
-          <a href={`/api/cases/${caseId}/expediente?entity=DIAN`} target="_blank" className="text-emerald-700 underline">
+          <a href={`/api/cases/${caseId}/expediente?entity=DIAN`} target="_blank" className="text-brand-700 underline">
             Ver expediente DIAN
           </a>
         </div>
@@ -150,7 +150,7 @@ export default function AdminActions({
         </button>
       </div>
 
-      {msg && <p className="text-sm font-semibold text-emerald-700">{msg}</p>}
+      {msg && <p className="text-sm font-semibold text-brand-700">{msg}</p>}
     </div>
   );
 }
@@ -174,7 +174,7 @@ export function DocReviewButtons({ documentId }: { documentId: string }) {
 
   return (
     <span className="flex gap-1">
-      <button title="Aprobar" disabled={busy} className="rounded bg-emerald-100 px-2 py-1 text-xs font-bold text-emerald-700 hover:bg-emerald-200" onClick={() => review("APROBADO")}>
+      <button title="Aprobar" disabled={busy} className="rounded bg-brand-100 px-2 py-1 text-xs font-bold text-brand-700 hover:bg-brand-200" onClick={() => review("APROBADO")}>
         ✓
       </button>
       <button title="Requiere corrección" disabled={busy} className="rounded bg-amber-100 px-2 py-1 text-xs font-bold text-amber-700 hover:bg-amber-200" onClick={() => review("REQUIERE_CORRECCION")}>

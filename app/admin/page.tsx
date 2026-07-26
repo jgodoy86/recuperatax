@@ -74,7 +74,7 @@ export default async function Backoffice({
           <Link
             key={k}
             href={`/admin?f=${k}`}
-            className={`rounded-full px-4 py-1.5 text-sm font-semibold ${active === k ? "bg-emerald-600 text-white" : "bg-white text-slate-600 hover:bg-slate-100"}`}
+            className={`rounded-full px-4 py-1.5 text-sm font-semibold ${active === k ? "bg-brand-600 text-white" : "bg-white text-slate-600 hover:bg-slate-100"}`}
           >
             {label}
           </Link>
@@ -96,9 +96,9 @@ export default async function Backoffice({
           </thead>
           <tbody className="divide-y divide-slate-100">
             {cases.map((c) => (
-              <tr key={c.id} className="hover:bg-emerald-50/40">
+              <tr key={c.id} className="hover:bg-brand-50/40">
                 <td className="px-4 py-3">
-                  <Link href={`/admin/casos/${c.id}`} className="font-mono font-semibold text-emerald-700">
+                  <Link href={`/admin/casos/${c.id}`} className="font-mono font-semibold text-brand-700">
                     {c.refCode}
                   </Link>
                   <div className="mt-0.5">

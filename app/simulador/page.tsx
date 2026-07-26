@@ -80,7 +80,7 @@ export default function Simulador() {
     return (
       <div className="mx-auto max-w-3xl px-4 py-12">
         <div
-          className={`card border-2 ${v === "APTO" ? "border-emerald-400" : v === "REVISION" ? "border-amber-400" : "border-red-400"}`}
+          className={`card border-2 ${v === "APTO" ? "border-brand-400" : v === "REVISION" ? "border-amber-400" : "border-red-400"}`}
         >
           <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">Resultado del diagnóstico</p>
           <h1 className="mt-1 text-3xl font-black">
@@ -92,7 +92,7 @@ export default function Simulador() {
             <div className="mt-6 grid gap-4 sm:grid-cols-3">
               <div className="rounded-lg bg-slate-50 p-4">
                 <p className="text-xs font-semibold uppercase text-slate-500">IVA a recuperar</p>
-                <p className="text-xl font-black text-emerald-600">{fmt(result.estimatedRefund)}</p>
+                <p className="text-xl font-black text-brand-600">{fmt(result.estimatedRefund)}</p>
               </div>
               <div className="rounded-lg bg-slate-50 p-4">
                 <p className="text-xs font-semibold uppercase text-slate-500">Honorarios de éxito</p>
@@ -100,7 +100,7 @@ export default function Simulador() {
               </div>
               <div className="rounded-lg bg-slate-50 p-4">
                 <p className="text-xs font-semibold uppercase text-slate-500">Beneficio neto</p>
-                <p className="text-xl font-black text-emerald-700">{fmt(result.netBenefit)}</p>
+                <p className="text-xl font-black text-brand-700">{fmt(result.netBenefit)}</p>
               </div>
             </div>
           )}

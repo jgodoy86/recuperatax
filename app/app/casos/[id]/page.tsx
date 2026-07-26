@@ -62,7 +62,7 @@ export default async function CasoDetalle({
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="card">
           <p className="text-xs font-semibold uppercase text-slate-500">IVA a recuperar</p>
-          <p className="text-xl font-black text-emerald-700">{fmtCOP(c.estimatedRecovery)}</p>
+          <p className="text-xl font-black text-brand-700">{fmtCOP(c.estimatedRecovery)}</p>
         </div>
         <div className="card">
           <p className="text-xs font-semibold uppercase text-slate-500">Honorarios estimados</p>
@@ -81,8 +81,8 @@ export default async function CasoDetalle({
       </div>
 
       {/* Próximo paso */}
-      <div className="card mt-6 border-emerald-200 bg-emerald-50/50">
-        <p className="text-sm font-bold uppercase tracking-wide text-emerald-800">Próximo paso</p>
+      <div className="card mt-6 border-brand-200 bg-brand-50/50">
+        <p className="text-sm font-bold uppercase tracking-wide text-brand-800">Próximo paso</p>
         <p className="mt-1 text-slate-700">
           {c.status === "NO_APTO"
             ? "Tu caso no es apto según el diagnóstico. Escríbenos por WhatsApp si crees que hay un error en los datos."

@@ -26,7 +26,7 @@ export default function PaymentPanel({ caseId }: { caseId: string }) {
 
   if (p.status === "APROBADO") {
     return (
-      <div className="card mt-8 border-emerald-300 bg-emerald-50/50">
+      <div className="card mt-8 border-brand-300 bg-brand-50/50">
         <h2 className="text-xl font-bold">💳 Honorarios pagados</h2>
         <p className="mt-1 text-sm text-slate-600">
           Pago de {fmt(p.amountCOP)} recibido

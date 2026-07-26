@@ -50,7 +50,7 @@ export default async function MisCasos() {
       ) : (
         <div className="mt-8 space-y-4">
           {cases.map((c) => (
-            <Link key={c.id} href={`/app/casos/${c.id}`} className="card block transition hover:border-emerald-300">
+            <Link key={c.id} href={`/app/casos/${c.id}`} className="card block transition hover:border-brand-300">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <p className="font-mono text-sm text-slate-500">{c.refCode}</p>
@@ -58,7 +58,7 @@ export default async function MisCasos() {
                     {c.vehicleBrand} {c.vehicleModel} {c.vehicleYear}
                   </p>
                   <p className="text-sm text-slate-600">
-                    IVA a recuperar: <span className="font-bold text-emerald-700">{fmtCOP(c.estimatedRecovery)}</span>
+                    IVA a recuperar: <span className="font-bold text-brand-700">{fmtCOP(c.estimatedRecovery)}</span>
                   </p>
                 </div>
                 <div className="flex flex-col items-end gap-2">

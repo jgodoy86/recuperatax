@@ -75,12 +75,12 @@ export default function Flota() {
               <p className="text-2xl font-black">{result.total}</p>
               <p className="text-xs font-semibold uppercase text-slate-500">Filas</p>
             </div>
-            <div className="rounded-lg bg-emerald-50 p-3">
-              <p className="text-2xl font-black text-emerald-700">{result.creados}</p>
+            <div className="rounded-lg bg-brand-50 p-3">
+              <p className="text-2xl font-black text-brand-700">{result.creados}</p>
               <p className="text-xs font-semibold uppercase text-slate-500">Casos creados</p>
             </div>
-            <div className="rounded-lg bg-emerald-50 p-3">
-              <p className="text-2xl font-black text-emerald-700">{result.aptos}</p>
+            <div className="rounded-lg bg-brand-50 p-3">
+              <p className="text-2xl font-black text-brand-700">{result.aptos}</p>
               <p className="text-xs font-semibold uppercase text-slate-500">Aptos</p>
             </div>
             <div className="rounded-lg bg-red-50 p-3">
@@ -104,7 +104,7 @@ export default function Flota() {
                     <td className="px-3 py-2">{r.vehicle || "—"}</td>
                     <td className="px-3 py-2">
                       {r.ok ? (
-                        <span className="text-emerald-700">
+                        <span className="text-brand-700">
                           ✓ {r.refCode} · {r.verdict}
                         </span>
                       ) : (
